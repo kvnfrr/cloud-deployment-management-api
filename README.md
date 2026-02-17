@@ -60,7 +60,7 @@ Designed with:
 
 ## Local Setup
 
-### 1 Ensure PostgreSQL is running
+### Ensure PostgreSQL is running
 
 Create the database if it does not exist:
 
