@@ -1,68 +1,132 @@
-# Cloud Deployment Management API
+Cloud Deployment Management API
 
-A production-style backend service designed to manage application deployments across multiple environments (DEV, STAGING, PROD).
+A production-style backend service for managing application deployments across multiple environments (DEV, STAGING, PROD).
 
-This project models real-world DevOps workflows by tracking services, versioned deployments, and deployment state transitions using a clean, layered Spring Boot architecture.
+This project models real-world DevOps workflows by tracking services, versioned deployments, and deployment states using a clean Spring Boot architecture backed by PostgreSQL.
 
----
+Tech Stack
 
-## Tech Stack
+Java 17
 
-- Java 17  
-- Spring Boot 3  
-- Spring Data JPA  
-- PostgreSQL  
-- Gradle  
+Spring Boot 3
 
----
+Spring Data JPA (Hibernate)
 
-## System Overview
+PostgreSQL
 
-The system models three primary domain entities:
+Gradle
 
-### Service
+Postman (API testing)
+
+Domain Model
+Service
+
 Represents an application that can be deployed.
 
-### Environment
-Represents deployment targets (e.g., DEV, STAGING, PROD).
+Environment
 
-### Deployment
+Represents deployment targets (DEV, STAGING, PROD).
+
+Deployment
+
 Represents a specific deployment of a service version to an environment.
 
-Each deployment maintains a strict status lifecycle:
+Each deployment contains:
 
-- `PENDING`
-- `DEPLOYED`
-- `FAILED`
-- `ROLLED_BACK`
+UUID identifier
 
----
+Version
 
-## Architecture
+Status (default: PENDING)
+
+Created timestamp
+
+Associated Service
+
+Associated Environment
+
+Current Features
+
+Create a deployment via REST API
+
+Automatic creation of Service and Environment if not found
+
+UUID-based identifiers
+
+Relational data modeling with foreign key constraints
+
+PostgreSQL persistence
+
+Verified via Postman
+
+API Example
+Create Deployment
+
+POST /deployments
+
+Request body (JSON):
+
+{
+"serviceName": "payment-service",
+"environmentName": "prod",
+"version": "1.0.0"
+}
+
+Response (example):
+
+{
+"id": "uuid",
+"version": "1.0.0",
+"status": "PENDING",
+"createdAt": "timestamp",
+"service": { ... },
+"environment": { ... }
+}
+
+Architecture
 
 The application follows a layered architecture:
 
-- **Controller Layer** – REST endpoints  
-- **Service Layer** – Business logic & deployment state transitions  
-- **Repository Layer** – JPA persistence  
-- **PostgreSQL** – Relational database  
+Controller Layer – REST endpoints
 
-Designed with:
+Service Layer – Business logic
 
-- Clean entity modeling  
-- DTO separation  
-- Global exception handling  
-- Input validation  
-- Pagination support  
-- Structured logging  
+Repository Layer – JPA persistence
 
----
+PostgreSQL – Relational storage
 
-## Local Setup
+The system uses explicit entity relationships and transactional persistence to maintain data integrity.
 
-### Ensure PostgreSQL is running
+Local Setup
+1. Create Database
 
-Create the database if it does not exist:
-
-```sql
 CREATE DATABASE deployment_db;
+
+2. Configure application.properties
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/deployment_db
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+spring.jpa.hibernate.ddl-auto=update
+
+3. Run the Application
+
+./gradlew bootRun
+
+Server runs at:
+
+http://localhost:8080
+
+Roadmap
+
+Retrieve deployments (GET endpoints)
+
+Update deployment status lifecycle
+
+Add validation and error handling
+
+Pagination support
+
+Dockerization
+
+CI/CD integration
